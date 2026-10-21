@@ -1,0 +1,10 @@
+{
+  "name": "LHM Broadcast",
+  "version": "1.0.0",
+  "author": "LinuxHUDManager",
+  "legacy": false,
+  "radar": true,
+  "killfeed": false,
+  "game": "cs2",
+  "variants": ["default"]
+}

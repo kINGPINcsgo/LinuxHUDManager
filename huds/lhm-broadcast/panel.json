@@ -1,0 +1,15 @@
+[
+  {
+    "label": "Display settings",
+    "name": "display_settings",
+    "inputs": [
+      { "type": "text", "name": "tournament_name", "label": "Tournament name" },
+      { "type": "text", "name": "tournament_stage", "label": "Tournament stage (e.g. Matchday 7)" },
+      { "type": "image", "name": "league_logo", "label": "League logo (top right)" },
+      { "type": "text", "name": "ct_color", "label": "CT color (hex)" },
+      { "type": "text", "name": "t_color", "label": "T color (hex)" },
+      { "type": "checkbox", "name": "hide_radar", "label": "Hide radar" },
+      { "type": "checkbox", "name": "hide_photos", "label": "Hide player photos" }
+    ]
+  }
+]
