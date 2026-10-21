@@ -15,6 +15,7 @@ import playerRoutes from './domains/players/player.routes'
 import teamRoutes from './domains/teams/team.routes'
 import createHudRouter from './domains/huds/hud.routes'
 import settingsRoutes from './domains/settings/settings.routes'
+import createFaceitRouter from './domains/faceit/faceit.routes'
 import spectatorRoutes from './domains/spectator/spectator.routes'
 import { uploadsPath } from './utils/multer'
 import { getHudsDir, getBuiltinHudDir } from '../paths'
@@ -57,6 +58,7 @@ app.use('/api/players', playerRoutes)
 app.use('/api/match', createMatchRouter(io))
 app.use('/api/settings', settingsRoutes)
 app.use('/api/spectator', spectatorRoutes)
+app.use('/api/faceit', createFaceitRouter(io))
 
 setupSockets(io)
 
