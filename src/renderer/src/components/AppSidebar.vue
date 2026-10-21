@@ -64,8 +64,8 @@ function openTwitch() {
             <span class="text-text-main">Linux</span><span class="text-primary">HudManager</span>
          </span>
          <!-- Collapsed view -->
-         <span v-else class="text-3xl">
-           <span class="text-text-main">L</span><span class="text-primary">H</span>
+         <span v-else class="text-2xl">
+           <span class="text-text-main">L</span><span class="text-primary">H</span><span class="text-text-main">M</span>
          </span>
        </div>
       <!-- Collapse button — only visible when expanded -->
