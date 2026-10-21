@@ -114,7 +114,7 @@ export function registerIpcHandlers(): void {
 
     // TODO: May want to use hud name instead for the title
     const overlayWindow = new BrowserWindow({
-      title: 'JTs Hud Manager Overlay',
+      title: 'LinuxHUDManager Overlay',
       width: 1920,
       height: 1080,
       transparent: true,

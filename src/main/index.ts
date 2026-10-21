@@ -49,7 +49,7 @@ async function checkForUpdate(): Promise<void> {
   try {
     const response = await net.fetch(
       'https://api.github.com/repos/kINGPINcsgo/LinuxHUDManager/releases/latest',
-      { headers: { 'User-Agent': 'jts-hud-manager-electron' } }
+      { headers: { 'User-Agent': 'linuxhudmanager-electron' } }
     )
     if (!response.ok) return
     const data = (await response.json()) as { tag_name: string }

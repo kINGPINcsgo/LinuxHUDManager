@@ -43,7 +43,7 @@ function openGithub() {
   window.api.openExternal('https://github.com/kINGPINcsgo/LinuxHUDManager')
 }
 function openTwitch() {
-  window.api.openExternal('https://twitch.tv/jtmythic')
+  window.api.openExternal('https://github.com/kINGPINcsgo/LinuxHUDManager')
 }
 </script>
 
@@ -60,14 +60,14 @@ function openTwitch() {
       :class="collapsed ? 'px-3 py-3' : 'px-4 py-4'"
     >
       <!-- Expanded view -->
-       <div @click="openTwitch" title="Open Twitch channel" class="cursor-pointer hover:bg-surface-hover rounded-lg px-2 py-1 flex items-center gap-2">
+       <div @click="openTwitch" title="Open GitHub" class="cursor-pointer hover:bg-surface-hover rounded-lg px-2 py-1 flex items-center gap-2">
          <img v-if="!collapsed" :src="twitchLogo" alt="Logo" class="size-8 rounded-lg">
-         <span v-if="!collapsed" class="text-3xl min-w-0">
-            <span class="text-text-main">JTs</span><span class="text-primary">Hud</span>
+         <span v-if="!collapsed" class="text-2xl min-w-0">
+            <span class="text-text-main">Linux</span><span class="text-primary">HUD</span>
          </span>
          <!-- Collapsed view -->
          <span v-else class="text-3xl">
-           <span class="text-text-main">JT</span><span class="text-primary">H</span>
+           <span class="text-text-main">L</span><span class="text-primary">H</span>
          </span>
        </div>
       <!-- Collapse button — only visible when expanded -->

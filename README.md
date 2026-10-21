@@ -1,4 +1,6 @@
-# JTs Hud (Formally OpenHud)
+# LinuxHUDManager
+
+Linux-Fork von [JTs Hud](https://github.com/JohnTimmermann/JTs-Hud) (ehemals OpenHud) von John Timmermann, GPL-3.0.
 
 A simple open-source Counter-Strike 2 Custom Hud and Hud manager. Manage overlays, players, teams, and matches. This project is passively updated, and community PRs are much appreciated!
 
@@ -53,7 +55,7 @@ The hud manager will write the required config file into your CS2 installation a
 ### Launching the default HUD
 
 1. Open the **HUDs** tab.
-2. Find **JTs Hud** and click **Launch**. This launches the main/default variant of the HUD
+2. Find **LinuxHUDManager** and click **Launch**. This launches the main/default variant of the HUD
 3. Press **Copy URL** button to copy the overlay URL and paste it into your broadcasting software (OBS, vMix, etc.) as a **Browser Source**.
 
 ![HUDs View](.github/images/huds.png)
@@ -85,7 +87,7 @@ These shortcuts are always active while the hud manager is running, regardless o
 
 ### Default HUD Keybinds
 
-When **JTs Hud** overlay is open, the following additional shortcuts become active:
+When **LinuxHUDManager** overlay is open, the following additional shortcuts become active:
 
 | Shortcut | Action                |
 | -------- | --------------------- |
