@@ -2,6 +2,7 @@ import { shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import path from 'path'
 import fs from 'fs'
 import net from 'net'
+import os from 'os'
 import { enforceOverlayOnTop } from './overlayUtils'
 import { registerHudKeybinds, unregisterHudKeybinds } from './shortcuts'
 import { getHudsDir, getBuiltinHudDir } from './paths'
@@ -50,9 +51,50 @@ const getCfgPath = (steamPath: string) =>
     'gamestate_integration_jts_hud_manager.cfg'
   )
 
+const getSteamCandidates = (): string[] => {
+  const home = os.homedir()
+  if (process.platform === 'win32')
+    return ['C:\\Program Files (x86)\\Steam', 'C:\\Program Files\\Steam']
+  if (process.platform === 'darwin') return [path.join(home, 'Library/Application Support/Steam')]
+  return [
+    path.join(home, '.local/share/Steam'),
+    path.join(home, '.steam/steam'),
+    path.join(home, '.steam/root'),
+    path.join(home, '.var/app/com.valvesoftware.Steam/.local/share/Steam'), // Flatpak
+    path.join(home, 'snap/steam/common/.local/share/Steam') // Snap
+  ]
+}
+
+const detectSteamPath = (): string => {
+  const c = getSteamCandidates()
+  return c.find((p) => fs.existsSync(path.join(p, 'steamapps'))) ?? c[0]
+}
+
+const loadKeybindsFor = (hudId: string | null): void => {
+  if (!hudId) return
+  const hudDir = hudId === 'default' ? getBuiltinHudDir() : path.join(getHudsDir(), hudId)
+  const keybindsPath = path.join(hudDir, 'keybinds.json')
+  if (!fs.existsSync(keybindsPath)) return
+  try {
+    const keybinds: { bind: string; action: string }[] = JSON.parse(
+      fs.readFileSync(keybindsPath, 'utf-8')
+    )
+    registerHudKeybinds(keybinds)
+    console.log(`Loaded ${keybinds.length} keybind(s) for HUD "${hudId}"`)
+  } catch (e) {
+    console.error(`Failed to parse keybinds.json for HUD "${hudId}":`, e)
+  }
+}
+
 let activeOverlay: BrowserWindow | null = null
 
 export function registerIpcHandlers(): void {
+  ipcMain.handle('get-default-steam-path', () => detectSteamPath())
+  ipcMain.handle('activate-hud', (_, hudId: string) => {
+    setActiveHudId(hudId)
+    loadKeybindsFor(hudId)
+  })
+
   ipcMain.on('open-hud', (_, hudUrl) => {
     // Ensure only one overlay window at a time
     if (activeOverlay && !activeOverlay.isDestroyed()) {
@@ -68,22 +110,7 @@ export function registerIpcHandlers(): void {
     // regardless of what name the HUD client sends in its register event.
     setActiveHudId(hudId)
 
-    // Load hud keybinds
-    if (hudId) {
-      const hudDir = hudId === 'default' ? getBuiltinHudDir() : path.join(getHudsDir(), hudId)
-      const keybindsPath = path.join(hudDir, 'keybinds.json')
-      if (fs.existsSync(keybindsPath)) {
-        try {
-          const keybinds: { bind: string; action: string }[] = JSON.parse(
-            fs.readFileSync(keybindsPath, 'utf-8')
-          )
-          registerHudKeybinds(keybinds)
-          console.log(`Loaded ${keybinds.length} keybind(s) for HUD "${hudId}"`)
-        } catch (e) {
-          console.error(`Failed to parse keybinds.json for HUD "${hudId}":`, e)
-        }
-      }
-    }
+    loadKeybindsFor(hudId)
 
     // TODO: May want to use hud name instead for the title
     const overlayWindow = new BrowserWindow({
@@ -122,7 +149,7 @@ export function registerIpcHandlers(): void {
   ipcMain.handle('select-folder', async (_, defaultPath?: string) => {
     const result = await dialog.showOpenDialog({
       title: 'Select Steam Folder',
-      defaultPath: defaultPath || 'C:\\Program Files (x86)\\Steam',
+      defaultPath: defaultPath || detectSteamPath(),
       properties: ['openDirectory']
     })
     return result.canceled ? null : result.filePaths[0]

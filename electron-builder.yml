@@ -36,14 +36,16 @@ dmg:
 linux:
   target:
     - AppImage
-    - snap
     - deb
-  maintainer: electronjs.org
+  maintainer: kINGPINcsgo <theo.teichert@gmail.com>
   category: Utility
+  icon: icon.png
+  executableName: jts-hud-manager
+  synopsis: CS2 HUD Manager
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
   provider: github
-  owner: JohnTimmermann
-  repo: JTs-Hud-Manager
+  owner: kINGPINcsgo
+  repo: LinuxHUDManager

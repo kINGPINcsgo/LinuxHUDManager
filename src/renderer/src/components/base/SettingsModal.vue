@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useSettings } from '../../features/settings/composables/useSettings';
 import BaseButton from './BaseButton.vue';
 import BaseCheckbox from './BaseCheckbox.vue';
@@ -14,7 +14,10 @@ watch(() => props.open, (val) => {
 });
 
 // --- GSI Config Installation ---
-const steamPath = ref('C:\\Program Files (x86)\\Steam');
+const steamPath = ref('');
+onMounted(async () => {
+  steamPath.value = await window.electron.ipcRenderer.invoke('get-default-steam-path');
+});
 const gsiStatus = ref<{ ok: boolean; message: string } | null>(null);
 const isInstallingGsi = ref(false);
 

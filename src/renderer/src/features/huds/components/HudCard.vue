@@ -37,6 +37,7 @@ const launchHud = (url: string, variant?: string) => {
 
 const copyUrl = (url: string) => {
   navigator.clipboard.writeText(url);
+  window.electron?.ipcRenderer.invoke('activate-hud', props.hud.id);
   copiedUrl.value = url;
   setTimeout(() => { copiedUrl.value = null; }, 1500);
 };

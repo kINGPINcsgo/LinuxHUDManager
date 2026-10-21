@@ -16,7 +16,9 @@ export const setupSockets = (io: Server) => {
         try {
           // Mark socket as a HUD so GSI updates can be filtered for it
           socket.join('huds')
-          const hudId = getActiveHudId() || hudName
+          const src = socket.handshake.headers.referer ?? socket.handshake.headers.origin ?? ''
+          const fromUrl = src.match(/\/huds\/([^/]+)\//)?.[1]
+          const hudId = fromUrl || getActiveHudId() || hudName
           const config = await getHudConfig(hudId)
           socket.emit('hud_config', config)
         } catch (e) {
