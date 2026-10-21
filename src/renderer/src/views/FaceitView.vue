@@ -37,7 +37,7 @@ const request = async (path: string, method: string, body?: unknown) => {
     body: body ? JSON.stringify(body) : undefined,
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || `Fehler (HTTP ${res.status})`);
+  if (!res.ok) throw new Error(data.error || `Error (HTTP ${res.status})`);
   return data;
 };
 
@@ -102,7 +102,7 @@ onMounted(loadSettings);
   <div class="p-6 bg-surface text-zinc-200 min-h-screen">
     <h1 class="text-2xl font-bold text-text-main mb-1">FACEIT</h1>
     <p class="text-sm text-zinc-500 mb-6">
-      Match-Link oder Match-ID einfügen. Teams, Logos und Spieler werden geladen und als Match angelegt.
+      Paste a match link or match ID. Teams, logos and players are fetched and a match is created.
     </p>
 
     <!-- Match input -->
@@ -112,12 +112,12 @@ onMounted(loadSettings);
           <BaseInput
             :model-value="input"
             @update:model-value="input = $event as string"
-            label="FACEIT Match-Link oder Match-ID"
+            label="FACEIT match link or match ID"
             placeholder="https://www.faceit.com/de/cs2/room/1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           />
         </div>
         <BaseButton variant="primary" :disabled="!input.trim() || isLoading" @click="loadMatch">
-          {{ isLoading ? 'Lädt…' : 'Match laden' }}
+          {{ isLoading ? 'Loading…' : 'Load match' }}
         </BaseButton>
       </div>
 
@@ -127,7 +127,7 @@ onMounted(loadSettings);
       <div v-if="match" class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col gap-4">
         <div class="flex items-center justify-between text-xs text-zinc-500">
           <span>{{ match.competition || 'FACEIT Match' }} · BO{{ match.bestOf }} · {{ match.status }}</span>
-          <span>Quelle: {{ match.source === 'api' ? 'FACEIT API' : 'öffentlicher Endpunkt' }}</span>
+          <span>Source: {{ match.source === 'api' ? 'FACEIT API' : 'public endpoint' }}</span>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -140,24 +140,24 @@ onMounted(loadSettings);
               <li v-for="p in team.players" :key="p.playerId" class="flex items-center gap-2">
                 <img v-if="p.avatar" :src="p.avatar" class="size-5 rounded-full object-cover" referrerpolicy="no-referrer" />
                 <span>{{ p.nickname }}</span>
-                <span class="text-xs text-zinc-600 ml-auto">{{ p.steamId || 'keine Steam-ID' }}</span>
+                <span class="text-xs text-zinc-600 ml-auto">{{ p.steamId || 'no Steam ID' }}</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div class="flex items-center justify-between border-t border-zinc-800 pt-3">
-          <BaseCheckbox v-model="setCurrent" label="Als aktuelles Match setzen" />
+          <BaseCheckbox v-model="setCurrent" label="Set as current match" />
           <BaseButton variant="primary" :disabled="isImporting" @click="doImport">
-            {{ isImporting ? 'Importiert…' : 'Importieren' }}
+            {{ isImporting ? 'Importing…' : 'Import' }}
           </BaseButton>
         </div>
       </div>
 
       <!-- Result -->
       <div v-if="result" class="text-sm bg-emerald-900/20 border border-emerald-900/50 rounded-lg px-3 py-2 text-emerald-300">
-        Importiert: Teams {{ result.teamsCreated }} neu / {{ result.teamsUpdated }} aktualisiert,
-        Spieler {{ result.playersCreated }} neu / {{ result.playersUpdated }} aktualisiert.
+        Imported: teams {{ result.teamsCreated }} new / {{ result.teamsUpdated }} updated,
+        players {{ result.playersCreated }} new / {{ result.playersUpdated }} updated.
         <ul v-if="result.warnings.length" class="mt-2 text-amber-300 list-disc list-inside">
           <li v-for="w in result.warnings" :key="w">{{ w }}</li>
         </ul>
@@ -166,23 +166,23 @@ onMounted(loadSettings);
       <!-- API settings -->
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl">
         <button class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-zinc-300" @click="settingsOpen = !settingsOpen">
-          <span>API-Einstellungen</span>
+          <span>API Settings</span>
           <span class="text-xs font-normal" :class="apiKeySet ? 'text-emerald-400' : 'text-amber-400'">
-            {{ apiKeySet ? `API-Key gesetzt (${apiKeyHint})` : 'kein API-Key' }}
+            {{ apiKeySet ? `API key set (${apiKeyHint})` : 'No API key' }}
           </span>
         </button>
         <div v-if="settingsOpen" class="px-4 pb-4 flex flex-col gap-3 border-t border-zinc-800 pt-3">
           <p class="text-xs text-zinc-500">
-            Mit API-Key nutzt das Tool die offizielle FACEIT Data API (empfohlen). Einen Server-side-Key erstellst du im
-            FACEIT Developer Portal (developers.faceit.com). Ohne Key wird ein inoffizieller Endpunkt versucht, der
-            jederzeit ausfallen kann. Der Key wird nur lokal gespeichert.
+            With an API key the tool uses the official FACEIT Data API (recommended). Create a server-side key in the
+            FACEIT Developer Portal (developers.faceit.com). Without a key, an unofficial endpoint is tried, which may
+            stop working at any time. The key is stored locally only.
           </p>
           <div class="flex gap-2 items-end">
             <div class="flex-1">
-              <BaseInput :model-value="apiKey" @update:model-value="apiKey = $event as string" type="password" label="API-Key" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+              <BaseInput :model-value="apiKey" @update:model-value="apiKey = $event as string" type="password" label="API key" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
             </div>
-            <BaseButton variant="primary" :disabled="!apiKey.trim() || savingKey" @click="saveKey">Speichern</BaseButton>
-            <BaseButton v-if="apiKeySet" variant="danger" :disabled="savingKey" @click="removeKey">Entfernen</BaseButton>
+            <BaseButton variant="primary" :disabled="!apiKey.trim() || savingKey" @click="saveKey">Save</BaseButton>
+            <BaseButton v-if="apiKeySet" variant="danger" :disabled="savingKey" @click="removeKey">Remove</BaseButton>
           </div>
         </div>
       </div>

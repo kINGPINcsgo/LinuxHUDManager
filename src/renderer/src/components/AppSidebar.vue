@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { socket } from '../socket';
-import twitchLogo from '../assets/icon.jpg'
 import SettingsModal from './base/SettingsModal.vue';
 import SidebarNavLink from './SidebarNavLink.vue';
 import BaseButton from './base/BaseButton.vue';
@@ -61,9 +60,8 @@ function openTwitch() {
     >
       <!-- Expanded view -->
        <div @click="openTwitch" title="Open GitHub" class="cursor-pointer hover:bg-surface-hover rounded-lg px-2 py-1 flex items-center gap-2">
-         <img v-if="!collapsed" :src="twitchLogo" alt="Logo" class="size-8 rounded-lg">
-         <span v-if="!collapsed" class="text-2xl min-w-0">
-            <span class="text-text-main">Linux</span><span class="text-primary">HUD</span>
+         <span v-if="!collapsed" class="text-xl font-semibold min-w-0">
+            <span class="text-text-main">Linux</span><span class="text-primary">HudManager</span>
          </span>
          <!-- Collapsed view -->
          <span v-else class="text-3xl">

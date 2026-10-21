@@ -39,7 +39,7 @@ export const setApiKey = async (key: string): Promise<void> => {
 /** Accepts a full FACEIT room URL or a bare match id like "1-xxxxxxxx-xxxx-..." */
 export const parseMatchId = (input: string): string => {
   const m = (input ?? '').match(MATCH_ID_RE)
-  if (!m) throw new Error('Keine gültige FACEIT-Match-ID gefunden (erwartet z. B. 1-b95833c0-e49a-...).')
+  if (!m) throw new Error('No valid FACEIT match ID found (expected e.g. 1-b95833c0-e49a-...).')
   return m[0].toLowerCase()
 }
 
@@ -48,10 +48,10 @@ const httpJson = async (url: string, headers: Record<string, string> = {}): Prom
     headers: { Accept: 'application/json', 'User-Agent': 'LinuxHUDManager', ...headers },
     signal: AbortSignal.timeout(15000)
   })
-  if (res.status === 404) throw new Error('Match nicht gefunden (404). Stimmt die Match-ID?')
+  if (res.status === 404) throw new Error('Match not found (404). Is the match ID correct?')
   if (res.status === 401 || res.status === 403)
-    throw new Error(`FACEIT hat den Zugriff abgelehnt (${res.status}). Ist der API-Key korrekt?`)
-  if (!res.ok) throw new Error(`FACEIT-Anfrage fehlgeschlagen (HTTP ${res.status}).`)
+    throw new Error(`FACEIT denied access (${res.status}). Is the API key correct?`)
+  if (!res.ok) throw new Error(`FACEIT request failed (HTTP ${res.status}).`)
   return res.json()
 }
 
@@ -128,7 +128,7 @@ const fetchViaPublic = async (matchId: string): Promise<FaceitMatchInfo> => {
     }))
   })
   const teams = p?.teams
-  if (!teams?.faction1 || !teams?.faction2) throw new Error('Unerwartete Antwort von FACEIT (keine Teams gefunden).')
+  if (!teams?.faction1 || !teams?.faction2) throw new Error('Unexpected response from FACEIT (no teams found).')
   return {
     matchId,
     competition: String(p.entity?.name ?? p.competition_name ?? ''),
@@ -173,9 +173,9 @@ export const importMatch = async (
   const teamIds: string[] = []
 
   for (const t of info.teams) {
-    if (!t.name) throw new Error('FACEIT lieferte ein Team ohne Namen.')
+    if (!t.name) throw new Error('FACEIT returned a team without a name.')
     const logo = await downloadImage(t.avatar)
-    if (!logo && t.avatar) result.warnings.push(`Logo von „${t.name}“ konnte nicht geladen werden.`)
+    if (!logo && t.avatar) result.warnings.push(`Could not download the logo of "${t.name}".`)
 
     let team = await findTeam(t)
     if (team) {
@@ -200,7 +200,7 @@ export const importMatch = async (
 
     for (const p of t.players) {
       if (!p.steamId) {
-        result.warnings.push(`„${p.nickname}“ hat keine Steam-ID bei FACEIT und wurde übersprungen.`)
+        result.warnings.push(`"${p.nickname}" has no Steam ID on FACEIT and was skipped.`)
         continue
       }
       const avatar = await downloadImage(p.avatar)
